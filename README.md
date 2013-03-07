@@ -5,7 +5,7 @@
 *Scrolling Tab Bar Component.*
 
 A Sample XCode Project for iOS. 
-Runns on iOS 5.1 or higher
+Runs on iOS 5.1 or higher
 
 
 -----------------------------------
@@ -64,9 +64,8 @@ just copy the "ScrollingTabBar" folder into your project and add the files insid
 
 	
 ## Sample Images
-
-TODO sample images
-	
+![](https://raw.github.com/HerbertV/ScrollingTabBarExample/master/docs/sample1.jpg)
+![](https://raw.github.com/HerbertV/ScrollingTabBarExample/master/docs/sample2.jpg)
 
 ## Drafts 
 
