@@ -65,6 +65,7 @@ just copy the "ScrollingTabBar" folder into your project and add the files insid
 	
 ## Sample Images
 ![](https://raw.github.com/HerbertV/ScrollingTabBarExample/master/docs/sample1.jpg)
+
 ![](https://raw.github.com/HerbertV/ScrollingTabBarExample/master/docs/sample2.jpg)
 
 ## Drafts 
