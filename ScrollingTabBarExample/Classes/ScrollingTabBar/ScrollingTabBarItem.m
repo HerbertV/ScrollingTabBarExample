@@ -60,29 +60,31 @@
     float h = LABEL_HEIGHT;
     float y = self.frame.size.height - h;
     
-    self.label = [[UILabel alloc] initWithFrame: 
-			 CGRectMake(
-						0,
-						y,
-						self.frame.size.width,
-						h
-						)
-			 ];
+    self.label = [[UILabel alloc] initWithFrame: CGRectMake(0, y, self.frame.size.width, h)];
     
-    label.font = [UIFont boldSystemFontOfSize: LABEL_FONTSIZE];
-    label.textAlignment = UITextAlignmentCenter;
+    self.label.font = [UIFont boldSystemFontOfSize: LABEL_FONTSIZE];
     
-    [label setBackgroundColor: [UIColor clearColor]];
-    [label setTextColor:[UIColor whiteColor]];
-    label.opaque = NO;
+    //------------------------------------------------------------------------------
+    // if system version is grather then or equal to 6.0 use NSTextAlignmentCenter,
+    // otherwise UITextAlignmentCenter
+    //------------------------------------------------------------------------------
+    if ([[[UIDevice currentDevice] systemVersion] compare: @"6.0" options:NSNumericSearch] != NSOrderedAscending) {
+        self.label.textAlignment = NSTextAlignmentCenter;
+    } else {
+        self.label.textAlignment = UITextAlignmentCenter;
+    }
     
-    [self addSubview:label]; 
+    [self.label setBackgroundColor: [UIColor clearColor]];
+    [self.label setTextColor:[UIColor whiteColor]];
+    self.label.opaque = NO;
+    
+    [self addSubview:self.label];
 }
 
 
 - (void) setupIconView
 {
-    UIImage *img = [UIImage imageNamed:normalIcon];
+    UIImage *img = [UIImage imageNamed:self.normalIcon];
     
 	// using floats cause to blur the image,
 	// this is because the tab bar height is uneven
@@ -95,39 +97,30 @@
 		y = (self.frame.size.height - img.size.height)/2;
     
     self.iconView = [[UIView alloc] initWithFrame:CGRectMake(x,y,w,h)];
-    [iconView setBackgroundColor: [UIColor colorWithPatternImage:img]];
-    iconView.opaque = NO;
+    [self.iconView setBackgroundColor: [UIColor colorWithPatternImage:img]];
+    self.iconView.opaque = NO;
     
-    [self addSubview:iconView];
+    [self addSubview:self.iconView];
 }
 
 
 - (UIImage *) getSelectionBackgroundImage
 {
-	NSDictionary *style = [delegate getItemStyle];
+	NSDictionary *style = [self.delegate getItemStyle];
 	// the base image either normal or retina @2x
-	UIImage *baseImage = [UIImage imageNamed:
-						  [style objectForKey:@"selectionBackground"]
-						  ];	
+	UIImage *baseImage = [UIImage imageNamed: style[@"selectionBackground"]];
 	
 	// now set the cap insets for streching 
-	UIEdgeInsets insets = UIEdgeInsetsFromString([style objectForKey:@"selectionBgCapInsets"]);
+	UIEdgeInsets insets = UIEdgeInsetsFromString(style[@"selectionBgCapInsets"]);
 	// since iOS 5.0 you can use this function
 	UIImage *resizableImage = [baseImage resizableImageWithCapInsets: insets];	
 	// instead of strechableImageWithLeftCapWidth ...
 	
 	// start resizing 
 	// scale is needed for retina display
-	UIGraphicsBeginImageContextWithOptions(self.frame.size,
-										   NO, 
-										   [[UIScreen mainScreen] scale]
-										   );
+	UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, [[UIScreen mainScreen] scale]);
 	
-	[resizableImage drawInRect:CGRectMake(0,
-										  0,
-										  self.frame.size.width,
-										  self.frame.size.width)
-	 ];
+	[resizableImage drawInRect:CGRectMake(0, 0, self.frame.size.width, self.frame.size.width)];
 	UIImage *resizedImage = UIGraphicsGetImageFromCurrentImageContext();
 	UIGraphicsEndImageContext();
 	
@@ -143,55 +136,15 @@
 #pragma mark - Implementation Public
 @implementation ScrollingTabBarItem
 
-#pragma mark - Synthesize
-@synthesize delegate;
-
-@synthesize label;
-@synthesize iconView;
-
-@synthesize normalIcon;
-@synthesize activeIcon;
-
-@synthesize viewController;
-@synthesize callbackAction;
-@synthesize callbackTarget;
-
-@synthesize scrollAnchor;
-@synthesize enabled;
-@synthesize selected;
-
-@synthesize scrollStartPoint;
-@synthesize scrollTolleranceReached;
-@synthesize lastScrollDirection;
-
-
-
 // -------------------------------------------------------------------------------
 // Dealloc
 // -------------------------------------------------------------------------------
 #pragma mark - Dealloc
-
 - (void) dealloc
 {
-	[delegate release];
-	
-	if( label != nil )
-		[label release];
-	
-	[iconView release];
-	[viewController release];
-	
-	
 	self.delegate = nil;
-	self.label = nil;
-	self.iconView = nil;
-	self.normalIcon = nil;
-	self.activeIcon = nil;
-	self.viewController = nil;
 	self.callbackAction = nil;
 	self.callbackTarget = nil;
-	
-	[super dealloc];
 }
 
 
@@ -243,8 +196,7 @@
 {
     self.normalIcon = icon;
     
-    if( !selected 
-			&& icon != nil )
+    if( !self.isSelected && icon != nil )
     {
         UIImage *img = [UIImage imageNamed:icon];
         self.iconView.opaque = YES;
@@ -258,8 +210,7 @@
 {
     self.activeIcon = icon;
     
-    if( selected 
-	   		&& icon != nil )
+    if( self.isSelected && icon != nil )
     {
         UIImage *img = [UIImage imageNamed:icon];
         self.iconView.opaque = YES;
@@ -270,23 +221,22 @@
 
 - (void) updateLabelText:(NSString *)text
 {
-	if( text == nil && label != nil ) 
+	if( text == nil && self.label != nil )
 	{
-		[label removeFromSuperview];
-		[label release];
+		[self.label removeFromSuperview];
 		self.label = nil;
 		
 		[self setNeedsLayout];
 	}
 	
-	if( text != nil && label == nil )
+	if( text != nil && self.label == nil )
 	{
 		[self setupLabel];
 		[self setNeedsLayout];	
 	}
 	
 	if( text != nil )
-		label.text = text;
+		self.label.text = text;
 }
 
 #pragma mark Override Setters
@@ -302,7 +252,7 @@
     }
     // imporant no self. here
     // otherwise it results in an invinite loop
-    enabled=e;     
+    _enabled=e;
 }
 
 // override setter
@@ -311,46 +261,31 @@
     self.opaque = YES;
     self.iconView.opaque = YES;
     
-	NSDictionary *style = [delegate getItemStyle];
+	NSDictionary *style = [self.delegate getItemStyle];
 	
     if( s ) 
     {
-        if( activeIcon != nil )
+        if( self.activeIcon != nil )
         {
-            [self.iconView setBackgroundColor: 
-             [UIColor colorWithPatternImage:
-              [UIImage imageNamed: activeIcon]
-              ]
-             ];
+            [self.iconView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed: self.activeIcon]]];
         }
 		
-		[self setBackgroundColor:
-         [UIColor colorWithPatternImage: 
-          [self getSelectionBackgroundImage]
-          ]
-         ];
-        [self.label setTextColor: [style objectForKey:@"fontActiveColor"]];
-        
+		[self setBackgroundColor:[UIColor colorWithPatternImage:[self getSelectionBackgroundImage]]];
+        [self.label setTextColor: style[@"fontActiveColor"]];
     }
     else
     {
-        [self.iconView setBackgroundColor: 
-         [UIColor colorWithPatternImage: 
-          [UIImage imageNamed: normalIcon]
-          ]
-         ];
-		
+        [self.iconView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed: self.normalIcon]]];
         [self setBackgroundColor:[UIColor clearColor]];
-        [self.label setTextColor:[style objectForKey:@"fontNormalColor"]];
+        [self.label setTextColor:style[@"fontNormalColor"]];
         
     }
     self.opaque = NO;
     self.iconView.opaque = NO;
     
-    
     // imporant no self. here
     // otherwise it results in an invinite loop
-    selected = s;
+    _selected = s;
 }
 
 
@@ -361,9 +296,9 @@
     // prepare move here
     UITouch *t = [touches anyObject];
 	// save the movement starting point for later use
-    self.scrollStartPoint  = [t locationInView: [self superview]];
-	self.scrollTolleranceReached = FALSE;
-	self.lastScrollDirection = ScrollsNot;
+    scrollStartPoint  = [t locationInView: [self superview]];
+	scrollTolleranceReached = FALSE;
+	lastScrollDirection = ScrollsNot;
 	
 	if( !self.enabled )
         return;
@@ -371,36 +306,28 @@
 	// do normal touch handling if enabled
     self.opaque = YES;
     
-    if( !selected )
-        [self setBackgroundColor:
-         [UIColor colorWithPatternImage:
-          [self getSelectionBackgroundImage]
-		  ]
-         ];
+    if( !self.isSelected )
+        [self setBackgroundColor:[UIColor colorWithPatternImage:[self getSelectionBackgroundImage]]];
     
     self.opaque = NO;
-    
 }
 
 
-- (void) touchesEnded:(NSSet *) touches 
-			withEvent:(UIEvent *) event
+- (void) touchesEnded:(NSSet *) touches withEvent:(UIEvent *) event
 {
     //release scroll lock
-    if( [delegate scrollingTabBarIsLockedForScroll] 
-	   		&& self.scrollAnchor )
+    if( [self.delegate scrollingTabBarIsLockedForScroll] && self.scrollAnchor )
     {
         self.scrollAnchor = FALSE;
-		self.scrollTolleranceReached = FALSE;
-        [delegate scrollingTabBarLockScroll:FALSE];
+		scrollTolleranceReached = FALSE;
+        [self.delegate scrollingTabBarLockScroll:FALSE];
 	}
     
 	// hide selection bg again
 	if( !self.selected )
         [self setBackgroundColor:[UIColor clearColor]];
     
-	if( !self.enabled 
-	   && lastScrollDirection == ScrollsNot )
+	if( !self.enabled && lastScrollDirection == ScrollsNot )
         return;
     
 	// prevent multiple touches
@@ -408,52 +335,45 @@
 		return;
 	
 	// call delegate
-	[delegate scrollingTabBarItemTouchEnded: self
-						 scrollingDirection: self.lastScrollDirection
-	 ];
-    
+	[self.delegate scrollingTabBarItemTouchEnded: self scrollingDirection: lastScrollDirection];    
 }
 
--(void) touchesMoved:(NSSet *) touches
-           withEvent:(UIEvent *) event
+-(void) touchesMoved:(NSSet *) touches withEvent:(UIEvent *) event
 {
     UITouch *t = [touches anyObject];
     CGPoint loc = [t locationInView: [self superview]];
     
     // fire only if tolerance is reached
 	// tolerance only until it is the first time reached
-	if( ABS(loc.x - scrollStartPoint.x) < SCROLL_TOLERANCE 
-	   		&& !self.scrollTolleranceReached )
+	if( ABS(loc.x - scrollStartPoint.x) < SCROLL_TOLERANCE && !scrollTolleranceReached )
 		return;
 	
-	self.scrollTolleranceReached = TRUE;
+	scrollTolleranceReached = TRUE;
 	
 	// update the scroll direction
 	if( loc.x > scrollStartPoint.x )
-		self.lastScrollDirection = ScrollsRight;
+		lastScrollDirection = ScrollsRight;
 	else 
-		self.lastScrollDirection = ScrollsLeft;
+		lastScrollDirection = ScrollsLeft;
 	
     // lock for scrolling
-    if( ![delegate scrollingTabBarIsLockedForScroll] )
+    if( ![self.delegate scrollingTabBarIsLockedForScroll] )
     {
 		self.scrollAnchor = TRUE;
-        [delegate scrollingTabBarLockScroll:TRUE];
+        [self.delegate scrollingTabBarLockScroll:TRUE];
     }
     
     // check if iam the scroll anchor
-    if( [delegate scrollingTabBarIsLockedForScroll] 
-	   		&& !self.scrollAnchor )
+    if( [self.delegate scrollingTabBarIsLockedForScroll] && !self.scrollAnchor )
         return;
 	
     // now call our delegate
-    [delegate scrollingTabBarItemScroll: self
-                                   from: self.scrollStartPoint 
-                                     to: loc 
-     ]; 
+    [self.delegate scrollingTabBarItemScroll: self
+                                        from: scrollStartPoint
+                                          to: loc]; 
     
     // update startpoint for our next call;
-    self.scrollStartPoint = loc;
+    scrollStartPoint = loc;
 }
 
 
@@ -461,15 +381,14 @@
 				withEvent:(UIEvent *) event
 {
     //release scroll lock
-    if( [delegate scrollingTabBarIsLockedForScroll] 
-	   && self.scrollAnchor )
+    if( [self.delegate scrollingTabBarIsLockedForScroll] && self.scrollAnchor )
     {
         self.scrollAnchor = FALSE;
-		self.scrollTolleranceReached = FALSE;
-        [delegate scrollingTabBarLockScroll:FALSE];
+		scrollTolleranceReached = FALSE;
+        [self.delegate scrollingTabBarLockScroll:FALSE];
 	}
     
-    if( !self.selected )
+    if( !self.isSelected )
         [self setBackgroundColor:[UIColor clearColor]];
     
 }
@@ -481,13 +400,13 @@
     [super layoutSubviews];
 	
 	// adjust icon position
-	CGRect f = iconView.frame;
+	CGRect f = self.iconView.frame;
 	int y = ICON_MARGIN_TOP_WITH_LABEL;
     
 	if( self.label == nil )
 		y = (self.frame.size.height - f.size.height)/2;
 	
-	iconView.frame = f;
+	self.iconView.frame = f;
 	
 }
 
