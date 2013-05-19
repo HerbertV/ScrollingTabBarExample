@@ -28,9 +28,6 @@
 // Interface
 // -------------------------------------------------------------------------------
 @interface ScrollBumper : UIView
-{
-	NSString *imgPath;
-}
 
 // -------------------------------------------------------------------------------
 // Properties
@@ -41,8 +38,7 @@
 // Constructors
 // -------------------------------------------------------------------------------
 
-- (id) initWithPosition:(CGPoint) pos
-			  imagePath:(NSString *) path;
+- (id) initWithPosition:(CGPoint) pos imagePath:(NSString *) path;
 
 
 // -------------------------------------------------------------------------------
@@ -50,9 +46,6 @@
 // -------------------------------------------------------------------------------
 
 // starts the blend out animation
-- (void) doBlendOut:(float) duration
-		   andDelay:(float) delay;
-
-
+- (void) doBlendOut:(float) duration andDelay:(float) delay;
 
 @end

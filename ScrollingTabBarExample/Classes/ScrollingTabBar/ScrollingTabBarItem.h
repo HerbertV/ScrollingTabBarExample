@@ -40,61 +40,39 @@ enum ScrollingDirection
 // Interface
 // -------------------------------------------------------------------------------
 @interface ScrollingTabBarItem : UIView
-{
-	id<ScrollingTabBarItemDelegate> delegate;
-    
-    UILabel *label;
-    UIView *iconView;
-    
-    //icon path for the normal appearance
-    NSString *normalIcon;
-    //icon path for the selected appearance
-    NSString *activeIcon;
-	
-    // linked view Controller
-    UIViewController *viewController;
-    // linked callback function
-    SEL callbackAction;
-	// linked callback target
-    id callbackTarget;
-	
-    // if true this is the scroll anchor 
-    // and only this item fires our scroll delegate function
-    BOOL scrollAnchor;
-	// true if enabled and touchable
-    BOOL enabled;
-	// true if selected/active
-    BOOL selected;
-    
-	
-	@private
-    	CGPoint scrollStartPoint;
-		BOOL scrollTolleranceReached;
-		enum ScrollingDirection lastScrollDirection;
+{	
+@private
+    CGPoint scrollStartPoint;
+    BOOL scrollTolleranceReached;
+    enum ScrollingDirection lastScrollDirection;
 }
 
 // -------------------------------------------------------------------------------
 // Properties
 // -------------------------------------------------------------------------------
-@property (nonatomic, assign) id<ScrollingTabBarItemDelegate> delegate;
+@property (nonatomic, weak) id<ScrollingTabBarItemDelegate> delegate;
 
-@property (nonatomic, retain) UILabel *label;
-@property (nonatomic, retain) UIView *iconView;
+@property (nonatomic, strong) UILabel *label;
+@property (nonatomic, strong) UIView *iconView;
 
-@property (nonatomic, copy) NSString *normalIcon;
-@property (nonatomic, copy) NSString *activeIcon;
+@property (nonatomic, copy) NSString *normalIcon; //icon path for the normal appearance
+@property (nonatomic, copy) NSString *activeIcon; //icon path for the selected appearance
 
-@property (nonatomic, retain) UIViewController *viewController;
-@property (nonatomic, assign) SEL callbackAction;
-@property (nonatomic, assign) id callbackTarget;
+@property (nonatomic, strong) UIViewController *viewController; // linked view Controller
+@property (nonatomic, assign) SEL callbackAction; // linked callback function
+@property (nonatomic, weak) id callbackTarget; // linked callback target
 
+//-------------------------------------------------------
+// if true this is the scroll anchor
+// and only this item fires our scroll delegate function
+//-------------------------------------------------------
 @property (nonatomic, assign, getter = isScrollAnchor) BOOL scrollAnchor;
-@property (nonatomic, assign, getter = isEnabled) BOOL enabled;
-@property (nonatomic, assign, getter = isSelected) BOOL selected;
+@property (nonatomic, assign, getter = isEnabled) BOOL enabled; // true if enabled and touchable
+@property (nonatomic, assign, getter = isSelected) BOOL selected; // true if selected/active
 
-@property (nonatomic, assign) CGPoint scrollStartPoint;
-@property (nonatomic, assign) BOOL scrollTolleranceReached;
-@property (nonatomic, assign) enum ScrollingDirection lastScrollDirection; 
+//@property (nonatomic, assign) CGPoint scrollStartPoint;
+//@property (nonatomic, assign) BOOL scrollTolleranceReached;
+//@property (nonatomic, assign) enum ScrollingDirection lastScrollDirection; 
 
 // -------------------------------------------------------------------------------
 // Constructors

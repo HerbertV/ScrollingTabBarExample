@@ -29,13 +29,8 @@
 // -------------------------------------------------------------------------------
 @interface ScrollIndicator : UIView
 {
-	NSString *normalIcon;
-	NSString *pulseFXIcon;
-	
-	UIView *pulseView;
-	
-	@private
-		BOOL animRunning;
+@private
+    BOOL animRunning;
 }
 
 // -------------------------------------------------------------------------------
@@ -44,7 +39,7 @@
 @property (nonatomic, copy) NSString *normalIcon;
 @property (nonatomic, copy) NSString *pulseFXIcon;
 
-@property (nonatomic, retain) UIView *pulseView;
+@property (nonatomic, strong) UIView *pulseView;
 
 @property (nonatomic, assign) BOOL animRunning;
 

@@ -25,13 +25,8 @@
 #import "ScrollingTabBar.h"
 
 @interface ViewController : UIViewController
-{
-	ScrollingTabBar *tabBar;
-	
-	NSString *activeLanguage;
-}
 
-@property (nonatomic, retain) ScrollingTabBar *tabBar;
+@property (nonatomic, strong) ScrollingTabBar *tabBar;
 @property (nonatomic, copy) NSString *activeLanguage;
 
 
