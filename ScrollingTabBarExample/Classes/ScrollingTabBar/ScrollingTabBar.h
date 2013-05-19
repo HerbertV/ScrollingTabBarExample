@@ -36,72 +36,55 @@
 // -------------------------------------------------------------------------------
 // Interface
 // -------------------------------------------------------------------------------
-@interface ScrollingTabBar : UIView
-		<ScrollingTabBarItemDelegate>
+@interface ScrollingTabBar : UIView <ScrollingTabBarItemDelegate>
 {
-	// Delgate 
-	id<ScrollingTabBarDelegate> delegate;
-	
-	// Array that contains ScrollingTabBarItems
-	NSMutableArray *arrTabBarItems;
-    // Index of the active Tab
-	NSInteger activeTabIndex;
-    	
-    // True if you currently scroll
-    // To lock all other item for scroll 
-	// (prevents 2 finger scrolls)
-    BOOL scrolling;
+@private
+    // indicator to show, there are more items to the left
+    ScrollIndicator *leftScrollIndicator;
+    // indicator to show, there are more items to the left
+    ScrollIndicator *rightScrollIndicator;
     
-	// view for our gradient
-	UIView *gradientView;
-	
-	// padding between two items
-	float itemPadding;
-	
-	// Dictionary for styling our items
-	//
-	// item style keys:
-	//  - width	
-	//  - height
-	//  - selectionBackground
-	//  - selectionBgCapInsets
-	//  - fontNormalColor
-	//  - fontActiveColor
-	NSDictionary *itemStyle;
-
-	@private
-		// indicator to show, there are more items to the left
-    	ScrollIndicator *leftScrollIndicator;
-		// indicator to show, there are more items to the left
-    	ScrollIndicator *rightScrollIndicator;    
-    
-		// Bumper that appears if the left scroll limit is reached
-		ScrollBumper *leftScrollBumper;
-		// Bumper that appears if the right scroll limit is reached
-		ScrollBumper *rightScrollBumper;
+    // Bumper that appears if the left scroll limit is reached
+    ScrollBumper *leftScrollBumper;
+    // Bumper that appears if the right scroll limit is reached
+    ScrollBumper *rightScrollBumper;
 }
-
 // -------------------------------------------------------------------------------
 // Properties
 // -------------------------------------------------------------------------------
-@property (nonatomic, assign) id<ScrollingTabBarDelegate> delegate;
+@property (nonatomic, weak) id<ScrollingTabBarDelegate> delegate; // Delgate
 
-@property (nonatomic, retain) NSMutableArray *arrTabBarItems;
-@property (nonatomic, assign) NSInteger activeTabIndex;
+@property (nonatomic, strong) NSMutableArray *arrTabBarItems; // Array that contains ScrollingTabBarItems
 
-@property (nonatomic, assign, getter=isScrolling) BOOL scrolling;
+@property (nonatomic, unsafe_unretained) NSInteger activeTabIndex; // Index of the active Tab
 
-@property (nonatomic, retain) UIView *gradientView;
+//---------------------------------------------------------------
+// True if you currently scroll
+// To lock all other item for scroll (prevents 2 finger scrolls)
+//---------------------------------------------------------------
+@property (nonatomic, getter=isScrolling) BOOL scrolling;
 
-@property (nonatomic, assign) float itemPadding;
+@property (nonatomic, strong) UIView *gradientView; // view for our gradient
 
-@property (nonatomic, retain) NSDictionary *itemStyle;
+@property (nonatomic, unsafe_unretained) float itemPadding; // padding between two items
 
-@property (nonatomic, retain) ScrollIndicator *leftScrollIndicator;
-@property (nonatomic, retain) ScrollIndicator *rightScrollIndicator;
+//-------------------------------------------------------
+// Dictionary for styling our items
+// item style keys:
+//  - width
+//  - height
+//  - selectionBackground
+//  - selectionBgCapInsets
+//  - fontNormalColor
+//  - fontActiveColor
+//-------------------------------------------------------
+@property (nonatomic, strong) NSDictionary *itemStyle;
 
-@property (nonatomic, retain) ScrollBumper *leftScrollBumper;
-@property (nonatomic, retain) ScrollBumper *rightScrollBumper;
+@property (nonatomic, strong) ScrollIndicator *leftScrollIndicator;
+@property (nonatomic, strong) ScrollIndicator *rightScrollIndicator;
+
+@property (nonatomic, strong) ScrollBumper *leftScrollBumper;
+@property (nonatomic, strong) ScrollBumper *rightScrollBumper;
 
 
 // -------------------------------------------------------------------------------

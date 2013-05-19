@@ -31,34 +31,14 @@
 
 @implementation ScrollBumper
 
-#pragma mark - Synthesize
-@synthesize imgPath;
-
-// -------------------------------------------------------------------------------
-// Dealloc
-// -------------------------------------------------------------------------------
-#pragma mark - Dealloc
-
-- (void) dealloc
-{
-	self.imgPath = nil;
-	
-	[super dealloc];
-}
-
 // -------------------------------------------------------------------------------
 // Initialize
 // -------------------------------------------------------------------------------
 #pragma mark - Initialize
-- (id) initWithPosition:(CGPoint) pos
-			  imagePath:(NSString *) path
+- (id) initWithPosition:(CGPoint) pos imagePath:(NSString *) path
 {
 	UIImage *img = [UIImage imageNamed:path];
-	CGRect frame = CGRectMake(pos.x, 
-							  pos.y,
-							  img.size.width, 
-							  img.size.height
-							  );
+	CGRect frame = CGRectMake(pos.x, pos.y, img.size.width, img.size.height);
     
 	self = [super initWithFrame: frame];
     
@@ -67,9 +47,7 @@
     	self.imgPath = path;
 		
 		[self setUserInteractionEnabled: NO];
-		[self setBackgroundColor: 
-		 [UIColor colorWithPatternImage: img]
-		 ];
+		[self setBackgroundColor:[UIColor colorWithPatternImage: img]];
 		self.opaque = NO;
 		self.alpha = 0.0;
 	}
@@ -81,8 +59,6 @@
 // Functions
 // -------------------------------------------------------------------------------
 #pragma mark - Functions
-
-
 
 - (void) doBlendOut:(float)duration 
 		   andDelay:(float)delay
@@ -96,6 +72,5 @@
 	
 	[UIView commitAnimations];
 }
-
 
 @end

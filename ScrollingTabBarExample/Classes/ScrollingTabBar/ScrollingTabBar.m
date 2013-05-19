@@ -50,9 +50,7 @@
 
 // called by every contructor to set default
 // values for our Class
-- (void) setupDefaults:(NSInteger) itemCount
-			  delegate:(id<ScrollingTabBarDelegate>) d
-		  hideGradient:(BOOL) hideG;
+- (void) setupDefaults:(NSInteger)itemCount delegate:(id<ScrollingTabBarDelegate>)d hideGradient:(BOOL)hideG;
 
 // initializes our gradient
 - (void) setupGradient;
@@ -103,9 +101,8 @@
 
 
 - (void) setupDefaults:(NSInteger) itemCount
-			  delegate:(id<ScrollingTabBarDelegate>) d
-		  hideGradient:(BOOL) hideG;
-
+              delegate:(id<ScrollingTabBarDelegate>) d
+          hideGradient:(BOOL) hideG;
 {
 	self.delegate = d;
 	
@@ -120,9 +117,9 @@
 	
 	// view releated stuff
 	self.backgroundColor = [UIColor blackColor];
-	self.autoresizingMask = UIViewAutoresizingFlexibleRightMargin 
-			| UIViewAutoresizingFlexibleTopMargin
-			| UIViewAutoresizingFlexibleWidth;
+	self.autoresizingMask = UIViewAutoresizingFlexibleRightMargin |
+                                UIViewAutoresizingFlexibleTopMargin |
+                                UIViewAutoresizingFlexibleWidth;
 	
 	[self setupDefaultScrollBumpers];
 	
@@ -137,94 +134,68 @@
 {
 	UIImage *img = [UIImage imageNamed:@"Data/stb/ScrollingTabBarGradient.png"];
 	
-	self.gradientView = [[UIView alloc] 
-					initWithFrame:CGRectMake(0,0,0, img.size.height)
-					];
-	gradientView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	[gradientView setUserInteractionEnabled:NO];
-	[gradientView setBackgroundColor:
-	 [UIColor colorWithPatternImage: img]
-	 ];
-	[gradientView setOpaque:NO];
-	[self addSubview: gradientView];
+	self.gradientView = [[UIView alloc] initWithFrame:CGRectMake(0,0,0, img.size.height)];
+	self.gradientView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	[self.gradientView setUserInteractionEnabled:NO];
+	[self.gradientView setBackgroundColor: [UIColor colorWithPatternImage: img]];
+	[self.gradientView setOpaque:NO];
+	[self addSubview:self.gradientView];
 }
 
 
 - (void) setupDefaultItemStyle
 {
-	self.itemStyle = [NSDictionary dictionaryWithObjectsAndKeys:
-					  [NSNumber numberWithFloat: STB_ITEM_WIDTH], 
-						@"width",
-					  
-					  [NSNumber numberWithFloat: STB_ITEM_HEIGHT], 
-					  	@"height",
-					  
-					  @"Data/stb/ScrollingTabBarSelection.png",
-					  	@"selectionBackground",
-					  
-					  @"{0.0,4.0,-1.0,4.0}",
-					  	@"selectionBgCapInsets",
-					  
-					  [UIColor grayColor],
-					  	@"fontNormalColor",
-					  
-					  [UIColor whiteColor],
-					  	@"fontActiveColor",
-					  
-					  nil
-					  ];
+	self.itemStyle = @{@"width": @(STB_ITEM_WIDTH),
+					  @"height": @(STB_ITEM_HEIGHT),
+					  @"selectionBackground": @"Data/stb/ScrollingTabBarSelection.png",
+					  @"selectionBgCapInsets": @"{0.0,4.0,-1.0,4.0}",
+					  @"fontNormalColor": [UIColor grayColor],
+					  @"fontActiveColor": [UIColor whiteColor]
+                    };
 }
 
 - (void) setupDefaultScrollIndicators
 {
-	self.leftScrollIndicator = [[ScrollIndicator alloc] 
-						  	 	initWithImagePath: @"Data/stb/ScrollingIndicatorLeftN.png"
-										   fxPath: @"Data/stb/ScrollingIndicatorLeftFX.png"
-						   		];
+	self.leftScrollIndicator = [[ScrollIndicator alloc] initWithImagePath: @"Data/stb/ScrollingIndicatorLeftN.png"
+                                                                   fxPath: @"Data/stb/ScrollingIndicatorLeftFX.png"];
 	
-	[self addSubview: leftScrollIndicator];
+	[self addSubview:self.leftScrollIndicator];
 	
-	self.rightScrollIndicator = [[ScrollIndicator alloc] 
-								 initWithImagePath: @"Data/stb/ScrollingIndicatorRightN.png"
-						    				fxPath: @"Data/stb/ScrollingIndicatorRightFX.png"
-						   		 ];
-	[self addSubview: rightScrollIndicator];
+	self.rightScrollIndicator = [[ScrollIndicator alloc] initWithImagePath: @"Data/stb/ScrollingIndicatorRightN.png"
+                                                                    fxPath: @"Data/stb/ScrollingIndicatorRightFX.png"];
+	[self addSubview:self.rightScrollIndicator];
 	
 }
 
 - (void) setupDefaultScrollBumpers
 {
-	self.leftScrollBumper = [[ScrollBumper alloc] 
-							 initWithPosition: CGPointMake(0,0) 
-									imagePath: @"Data/stb/ScrollingBumpLeft.png"
-							];
+	self.leftScrollBumper = [[ScrollBumper alloc] initWithPosition: CGPointMake(0,0)
+                                                         imagePath: @"Data/stb/ScrollingBumpLeft.png"];
 	
-	[self addSubview: leftScrollBumper];
+	[self addSubview:self.leftScrollBumper];
 	
-	self.rightScrollBumper = [[ScrollBumper alloc] 
-							  initWithPosition: CGPointMake(self.frame.size.width,0) 
-									 imagePath: @"Data/stb/ScrollingBumpRight.png"
-							  ];
+	self.rightScrollBumper = [[ScrollBumper alloc] initWithPosition: CGPointMake(self.frame.size.width,0)
+                                                          imagePath: @"Data/stb/ScrollingBumpRight.png"];
 	
-	[self addSubview: rightScrollBumper];
+	[self addSubview:self.rightScrollBumper];
 }
 
 - (void) layoutTabBarItems
 {
-	if( arrTabBarItems.count > 0 )
+	if(self.arrTabBarItems.count > 0 )
     {
         int max = [self calculateMaxVisibleTabs];
         
-        int fw = self.frame.size.width + itemPadding;
-        int tw = [[self.itemStyle objectForKey:@"width"] floatValue] + itemPadding;
+        int fw = self.frame.size.width + self.itemPadding;
+        int tw = [(self.itemStyle)[@"width"] floatValue] + self.itemPadding;
         
-        int delta = fw/arrTabBarItems.count;
-        if( arrTabBarItems.count > max )
+        int delta = fw/self.arrTabBarItems.count;
+        if(self.arrTabBarItems.count > max )
             delta=tw;
         
-        for( int i=0; i< arrTabBarItems.count; i++ )
+        for( int i=0; i< self.arrTabBarItems.count; i++ )
         {
-            UIView *v = [arrTabBarItems objectAtIndex:i];
+            UIView *v = self.arrTabBarItems[i];
             CGRect f = v.frame;
             
             f.origin.x = i*delta + delta/2 - tw/2;            
@@ -241,56 +212,45 @@
 			  selector:(SEL) action
 		selectorTarget:(id) target
 {
-	float w = [[self.itemStyle objectForKey:@"width"] floatValue];
-	float h = [[self.itemStyle objectForKey:@"height"] floatValue];
+	float w = [(self.itemStyle)[@"width"] floatValue];
+	float h = [(self.itemStyle)[@"height"] floatValue];
 	
- 	CGRect f = CGRectMake(0, 
-						  self.frame.size.height - h,
-						  w,
-						  h
-						  );
+ 	CGRect f = CGRectMake(0, self.frame.size.height - h, w, h);
 	
-    
-    ScrollingTabBarItem *item = [[ScrollingTabBarItem alloc]
-                                  initWithFrame: f
-								 	   delegate: self
-										  label: label 
-									 normalIcon: nicon 
-                                  	 activeIcon: aicon
-								 viewController: controller
-									   selector: action
-								 selectorTarget: target 
-                                  ];
+    ScrollingTabBarItem *item = [[ScrollingTabBarItem alloc] initWithFrame: f
+                                                                  delegate: self
+                                                                     label: label
+                                                                normalIcon: nicon
+                                                                activeIcon: aicon
+                                                            viewController: controller
+                                                                  selector: action
+                                                            selectorTarget: target];
 	
     // we store the items array index as tag property
-    [item setTag:arrTabBarItems.count];
+    [item setTag:self.arrTabBarItems.count];
     [item setDelegate:self];
     
-    [arrTabBarItems addObject:item];
+    [self.arrTabBarItems addObject:item];
     
 	// add below the scroll indicators if they are available
-	if( leftScrollIndicator != nil  )
-		[self insertSubview:item belowSubview:leftScrollIndicator];
-	else
+	if( self.leftScrollIndicator != nil  ) {
+		[self insertSubview:item belowSubview:self.leftScrollIndicator];
+    } else {
 		[self addSubview:item];
+    }
 	
-	// TODO if visible maybe animation 
+	// TODO if visible maybe animation
 	//[self layoutTabBarItems];
-    
-	
-	[item release];
-	
-	
 }
 
 - (BOOL) doBounceBackAnimation
 {
 	float bounceDelta = 0;
-    float itemWidth = [[itemStyle objectForKey:@"width"] floatValue];
+    float itemWidth = [self.itemStyle[@"width"] floatValue];
     float frameWidth = self.frame.size.width;
     
-	float firstItemPos = [[arrTabBarItems objectAtIndex:0] frame].origin.x;
-	float lastItemPos = [[arrTabBarItems objectAtIndex: arrTabBarItems.count-1] frame].origin.x;
+	float firstItemPos = [self.arrTabBarItems[0] frame].origin.x;
+	float lastItemPos = [self.arrTabBarItems[self.arrTabBarItems.count-1] frame].origin.x;
 	
 	
     if( firstItemPos > 0 )
@@ -304,21 +264,17 @@
 	
 	//ScrollBumper animation
 	if( bounceDelta < 0 )
-		[leftScrollBumper doBlendOut: ANIM_BOUNCE_DURATION 
-							andDelay: ANIM_BOUNCE_DELAY
-		 ];
+		[self.leftScrollBumper doBlendOut: ANIM_BOUNCE_DURATION andDelay: ANIM_BOUNCE_DELAY];
 	
 	if( bounceDelta > 0 )
-		[rightScrollBumper doBlendOut: ANIM_BOUNCE_DURATION 
-							 andDelay: ANIM_BOUNCE_DELAY
-	 	 ];
+		[self.rightScrollBumper doBlendOut: ANIM_BOUNCE_DURATION andDelay: ANIM_BOUNCE_DELAY];
 	
     //limit movement and bounce back
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:ANIM_BOUNCE_DURATION];
     [UIView setAnimationDelay:ANIM_BOUNCE_DELAY];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-    for( UIView *v in arrTabBarItems )
+    for( UIView *v in self.arrTabBarItems )
     {
         CGRect f = v.frame;
         f.origin.x += bounceDelta;
@@ -331,16 +287,16 @@
 
 - (void) doScrollToNextItem:(enum ScrollingDirection) direction
 {
-	float itemWidth = [[itemStyle objectForKey:@"width"] floatValue];
+	float itemWidth = [self.itemStyle[@"width"] floatValue];
     float frameWidth = self.frame.size.width;
     float scrollDelta = 0;
 		
 	if( direction == ScrollsRight )
 	{
 		// look for last visible item
-		for( int i=arrTabBarItems.count-1; i>-1; i-- )
+		for( int i=self.arrTabBarItems.count-1; i>-1; i-- )
 		{
-			CGRect f =  [[arrTabBarItems objectAtIndex:i] frame];
+			CGRect f = [self.arrTabBarItems[i] frame];
 			
 			if( f.origin.x < (frameWidth - itemWidth) )
 			{	
@@ -349,19 +305,19 @@
 			}
 		}
 		
-		CGRect fFirst = [[arrTabBarItems objectAtIndex:0] frame];
+		CGRect fFirst = [self.arrTabBarItems[0] frame];
 		
-		if( fFirst.origin.x + scrollDelta > 0 )
-			scrollDelta = - fFirst.origin.x; 
-		
+        if( fFirst.origin.x + scrollDelta > 0 ) {
+            scrollDelta = - fFirst.origin.x;
+        }
 	} else if( direction == ScrollsLeft ) {
 		// look for first visible item
-		for( int i=0; i<arrTabBarItems.count; i++ )
+		for( int i=0; i<self.arrTabBarItems.count; i++ )
 		{
-			CGRect f =  [[arrTabBarItems objectAtIndex:i] frame];
-			if( f.origin.x > (0 - itemWidth - itemPadding) )
+			CGRect f =  [self.arrTabBarItems[i] frame];
+			if( f.origin.x > (0 - itemWidth - self.itemPadding) )
 			{	
-				scrollDelta = 0 - f.origin.x - itemWidth - itemPadding;
+				scrollDelta = 0 - f.origin.x - itemWidth - self.itemPadding;
 				break;
 			}
 		}
@@ -373,11 +329,9 @@
     [UIView setAnimationDelay:0.0];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
 	[UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:
-		@selector(toggleScrollIndicatorsAndPulse)
-	 ];
+	[UIView setAnimationDidStopSelector:@selector(toggleScrollIndicatorsAndPulse)];
 	
-    for( UIView *v in arrTabBarItems )
+    for( UIView *v in self.arrTabBarItems )
     {
         CGRect f = v.frame;
         f.origin.x += scrollDelta;
@@ -385,42 +339,41 @@
     }
     
 	[UIView commitAnimations];
-	
 }
 
 
-- (void) toggleScrollIndicators
+- (void)toggleScrollIndicators
 {
-	if( leftScrollIndicator == nil )
+	if( self.leftScrollIndicator == nil )
 		return;
 	
-	if( arrTabBarItems.count == 0 )
+	if( self.arrTabBarItems.count == 0 )
 	{
-		[leftScrollIndicator setHidden:TRUE];
-		[rightScrollIndicator setHidden:TRUE];
+		[self.leftScrollIndicator setHidden:TRUE];
+		[self.rightScrollIndicator setHidden:TRUE];
 		return;
 	}
 		
     // left indicator
     {
-        CGRect f = [[arrTabBarItems objectAtIndex:0] frame];
+        CGRect f = [self.arrTabBarItems[0] frame];
         if( f.origin.x < 0 )
         {
-            [leftScrollIndicator setHidden:FALSE];
+            [self.leftScrollIndicator setHidden:FALSE];
         } else {
-            [leftScrollIndicator setHidden:TRUE];
+            [self.leftScrollIndicator setHidden:TRUE];
         }
     }
     
     //right indicator
     {
-        CGRect f = [[arrTabBarItems objectAtIndex:arrTabBarItems.count-1] frame];
+        CGRect f = [self.arrTabBarItems[self.arrTabBarItems.count-1] frame];
         
 		if( (f.origin.x + f.size.width ) > self.frame.size.width )
         {
-            [rightScrollIndicator setHidden:FALSE];
+            [self.rightScrollIndicator setHidden:FALSE];
         } else {
-            [rightScrollIndicator setHidden:TRUE];
+            [self.rightScrollIndicator setHidden:TRUE];
         }
     }
 }
@@ -430,49 +383,49 @@
 {
 	[self toggleScrollIndicators];
 	
-	if( leftScrollIndicator == nil )
+	if( self.leftScrollIndicator == nil )
 		return;
 	
-	if( ![rightScrollIndicator isHidden] )
-		[rightScrollIndicator doPulse];
+	if( ![self.rightScrollIndicator isHidden] )
+		[self.rightScrollIndicator doPulse];
 	
-	if( ![leftScrollIndicator isHidden] )
-		[leftScrollIndicator doPulse];
+	if( ![self.leftScrollIndicator isHidden] )
+		[self.leftScrollIndicator doPulse];
 	
 }
 
 - (void) blendScrollBumpers
 {
-	if( leftScrollBumper == nil )
+	if( self.leftScrollBumper == nil )
 		return;
 	
 	// left bumper
     {
-		CGRect f = [[arrTabBarItems objectAtIndex:0] frame];
+		CGRect f = [self.arrTabBarItems[0] frame];
 		
         if( f.origin.x > 0 )
         {
 			float a = f.origin.x/BUMPER_ALPHA_LIMIT;
 			
-            [leftScrollBumper setAlpha: a];
-			[leftScrollBumper setHidden:FALSE];
+            [self.leftScrollBumper setAlpha: a];
+			[self.leftScrollBumper setHidden:FALSE];
 		} else {
-		    [leftScrollBumper setHidden:TRUE];
+		    [self.leftScrollBumper setHidden:TRUE];
 		}
     }
     
 	//right bumper
 	{
-		CGRect f = [[arrTabBarItems objectAtIndex:arrTabBarItems.count-1] frame];
+		CGRect f = [self.arrTabBarItems[self.arrTabBarItems.count-1] frame];
 		
         if( (f.origin.x + f.size.width ) < self.frame.size.width )
         {
 			float a = (self.frame.size.width - f.origin.x - f.size.width)/BUMPER_ALPHA_LIMIT;
-			[rightScrollBumper setAlpha: a];
-			[rightScrollBumper setHidden:FALSE];
+			[self.rightScrollBumper setAlpha: a];
+			[self.rightScrollBumper setHidden:FALSE];
 			
 		} else {
-            [rightScrollBumper setHidden:TRUE];
+            [self.rightScrollBumper setHidden:TRUE];
         }
     }
 }
@@ -486,26 +439,11 @@
 #pragma mark - Implementation Public
 @implementation ScrollingTabBar
 
-#pragma mark - Synthesize
-@synthesize delegate;
-
-@synthesize arrTabBarItems;
-@synthesize activeTabIndex;
-
-@synthesize scrolling;
-
-@synthesize gradientView;
-
-@synthesize leftScrollIndicator;
-@synthesize rightScrollIndicator;
-
 @synthesize leftScrollBumper;
 @synthesize rightScrollBumper;
 
-@synthesize itemPadding;
-
-@synthesize itemStyle;
-
+@synthesize leftScrollIndicator;
+@synthesize rightScrollIndicator;
 
 // -------------------------------------------------------------------------------
 // Dealloc
@@ -514,25 +452,7 @@
 
 - (void) dealloc
 {
-	[delegate release];
-	[arrTabBarItems release];
-	[gradientView release];
-	[leftScrollIndicator release];
-	[rightScrollIndicator release];
-	[leftScrollBumper release];
-	[rightScrollBumper release];
-	[itemStyle release];
-	
-	self.delegate = nil;
-	self.arrTabBarItems = nil;
-	self.gradientView = nil;
-	self.leftScrollIndicator = nil;
-	self.rightScrollIndicator = nil;
-	self.leftScrollBumper = nil;
-	self.rightScrollBumper = nil;
-	self.itemStyle = nil;	
-	
-	[super dealloc];
+	self.delegate = nil;	
 }
 
 
@@ -541,41 +461,28 @@
 // -------------------------------------------------------------------------------
 #pragma mark - Initialize
 
-- (id) initWithItemCount:(NSInteger)count
-            delegate:(id<ScrollingTabBarDelegate>)d
+- (id) initWithItemCount:(NSInteger)count delegate:(id<ScrollingTabBarDelegate>)d
 {
-	self = [super initWithFrame:
-			CGRectMake(0,0,0, STB_BAR_HEIGHT)
-			];
+	self = [super initWithFrame:CGRectMake(0,0,0, STB_BAR_HEIGHT)];
     
 	if( self )
     {
-        [self setupDefaults:count 
-				   delegate:d
-		 		hideGradient:NO];
-		
+        [self setupDefaults:count delegate:d hideGradient:NO];
     }
     return self;
 }
 
 
-- (id) initWithItemCount:(NSInteger)count
-				delegate:(id<ScrollingTabBarDelegate>)d
-			hideGradient:(BOOL)hideG
+- (id) initWithItemCount:(NSInteger)count delegate:(id<ScrollingTabBarDelegate>)d hideGradient:(BOOL)hideG
 {
-	self = [super initWithFrame:
-			CGRectMake(0,0,0, STB_BAR_HEIGHT)
-			];
+	self = [super initWithFrame:CGRectMake(0,0,0, STB_BAR_HEIGHT)];
     
 	if( self )
     {
-        [self setupDefaults:count 
-				   delegate:d
-			   hideGradient:hideG];
+        [self setupDefaults:count delegate:d hideGradient:hideG];
     }
     return self;
 }
-
 
 // -------------------------------------------------------------------------------
 // Functions
@@ -584,8 +491,8 @@
 
 - (NSInteger) calculateMaxVisibleTabs
 {
-	int fw = self.frame.size.width + itemPadding;
-    int tw = [[self.itemStyle objectForKey:@"width"] floatValue] + itemPadding;
+	int fw = self.frame.size.width + self.itemPadding;
+    int tw = [(self.itemStyle)[@"width"] floatValue] + self.itemPadding;
     
     return fw / tw;
 }
@@ -594,10 +501,7 @@
 - (void) setGradientHidden:(BOOL) hidden
 {
 	if( hidden == YES )
-	{
-		if( gradientView != nil )
-			[gradientView release];
-		
+	{		
 		self.gradientView = nil;
 	} else {
 		[self setupGradient];
@@ -611,13 +515,12 @@
      				 activeIcon:(NSString *) aicon
  				 viewController:(UIViewController *) controller
 {
-    [self addTabBarItem:label 
-			 normalIcon:nicon 
-			 activeIcon:aicon 
-  		 viewController:controller
-			   selector:nil
-		 selectorTarget:nil
-     ];
+    [self addTabBarItem:label
+             normalIcon:nicon
+             activeIcon:aicon
+         viewController:controller
+               selector:nil
+         selectorTarget:nil];
 }
 
 
@@ -638,18 +541,15 @@
 
 - (ScrollingTabBarItem *) removeTabBarItemAtIndex:(NSInteger) index
 {
-	if( arrTabBarItems.count == 0
-	   		|| index < 0 
-	   		|| index >= arrTabBarItems.count )
+	if( self.arrTabBarItems.count == 0 || index < 0 || index >= self.arrTabBarItems.count )
 		return nil;
 	
-	ScrollingTabBarItem *item = [arrTabBarItems objectAtIndex:index];
+	ScrollingTabBarItem *item = self.arrTabBarItems[index];
 	[item removeFromSuperview];
-	[arrTabBarItems removeObjectAtIndex:index];
+	[self.arrTabBarItems removeObjectAtIndex:index];
 	
 	// TODO if visible maybe animation 
 	//[self layoutTabBarItems];
-	
 	
 	return item;
 }
@@ -658,12 +558,10 @@
 #pragma mark Accessing Tabs
 - (void) selectTabAtIndex:(NSInteger)index
 {
-	if( arrTabBarItems.count == 0
-	   		|| index < 0 
-	   		|| index >= arrTabBarItems.count )
+	if( self.arrTabBarItems.count == 0 || index < 0 || index >= self.arrTabBarItems.count )
 		return;
 	
-    ScrollingTabBarItem *newitem = [arrTabBarItems objectAtIndex:index];
+    ScrollingTabBarItem *newitem = self.arrTabBarItems[index];
     
     // fail save
     if( ![newitem isEnabled] )
@@ -672,12 +570,10 @@
     // Deselect
     if( self.activeTabIndex > -1 )
     {
-		ScrollingTabBarItem *previtem = [arrTabBarItems objectAtIndex: self.activeTabIndex];
-        
+		ScrollingTabBarItem *previtem = self.arrTabBarItems[self.activeTabIndex];
         
         // switch views only if the new item has a controller
-        if( previtem.viewController != nil 
-		   && newitem.viewController != nil )
+        if( previtem.viewController != nil && newitem.viewController != nil )
         {
             [previtem.viewController.view removeFromSuperview];
             
@@ -685,32 +581,23 @@
                 [previtem.viewController viewDidDisappear:NO];
             
             [previtem setSelected:FALSE];
-            
         }
     }
     
     // select new tab 
     // if a item has a call back we only call the action
-    if( newitem.callbackAction != nil
-       && newitem.callbackTarget != nil
-       )
+    if( newitem.callbackAction != nil && newitem.callbackTarget != nil)
     {
-        [newitem.callbackTarget 
-         performSelector: newitem.callbackAction
-         ];
-		
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [newitem.callbackTarget performSelector: newitem.callbackAction];
+        #pragma clang diagnostic pop
     } else if( newitem.viewController != nil ) {
         CGRect rect = self.superview.bounds;
 		//FIXME
-        newitem.viewController.view.frame = CGRectMake(0,
-                                                       0,
-                                                       rect.size.width,
-                                                       rect.size.height-self.frame.size.height
-                                                       );
+        newitem.viewController.view.frame = CGRectMake(0, 0, rect.size.width, rect.size.height-self.frame.size.height);
 		
-        [self.superview insertSubview:newitem.viewController.view 
-                         belowSubview:self
-         ];
+        [self.superview insertSubview:newitem.viewController.view belowSubview:self];
 		
         if( [[[UIDevice currentDevice] systemVersion] compare: @"5.0"] == NSOrderedAscending )
             [newitem.viewController viewDidAppear:NO];
@@ -721,42 +608,31 @@
 }
 
 
-- (void) enableTab:(BOOL)e 
-           atIndex:(NSInteger)index
+- (void) enableTab:(BOOL)e atIndex:(NSInteger)index
 {
-	if( arrTabBarItems.count == 0
-	   		|| index < 0 
-	   		|| index >= arrTabBarItems.count )
+	if( self.arrTabBarItems.count == 0 || index < 0 || index >= self.arrTabBarItems.count )
 		return;
 	
-    
-    ScrollingTabBarItem *item = [arrTabBarItems objectAtIndex:index];
+    ScrollingTabBarItem *item = self.arrTabBarItems[index];
     [item setEnabled:e];
 }
 
 
-- (void) setTabLabelText:(NSString *) text 
-				 atIndex:(NSInteger) index
+- (void) setTabLabelText:(NSString *) text atIndex:(NSInteger) index
 {
-	if( arrTabBarItems.count == 0
-	   		|| index < 0 
-	   		|| index >= arrTabBarItems.count )
+	if( self.arrTabBarItems.count == 0 || index < 0 || index >= self.arrTabBarItems.count )
 		return;
 	
-    ScrollingTabBarItem *item = [arrTabBarItems objectAtIndex:index];
+    ScrollingTabBarItem *item = self.arrTabBarItems[index];
     [item updateLabelText:text];
 }
 
-- (void) setTabNormalIcon:(NSString *) nicon
-			   activeIcon:(NSString *) aicon
-				  atIndex:(NSInteger) index
+- (void) setTabNormalIcon:(NSString *) nicon activeIcon:(NSString *) aicon atIndex:(NSInteger) index
 {
-	if( arrTabBarItems.count == 0
-	   		|| index < 0 
-	  		|| index >= arrTabBarItems.count )
+	if( self.arrTabBarItems.count == 0 || index < 0 || index >= self.arrTabBarItems.count )
 		return;
 	
-	ScrollingTabBarItem *item = [arrTabBarItems objectAtIndex:index];
+	ScrollingTabBarItem *item = self.arrTabBarItems[index];
     [item updateNormalIcon: nicon];
 	[item updateActiveIcon: aicon];
 }
@@ -765,17 +641,16 @@
 #pragma mark Accessing Active Controller
 - (UIViewController *) getActiveViewController
 {
-	if( arrTabBarItems.count == 0 )
+	if( self.arrTabBarItems.count == 0 )
 		return nil;
 	
-    ScrollingTabBarItem *item = [arrTabBarItems objectAtIndex:activeTabIndex];
+    ScrollingTabBarItem *item = self.arrTabBarItems[self.activeTabIndex];
     return item.viewController;
 }
 
 
 #pragma mark Accessing Indicator and Bumper
-- (void) setIndicators:(ScrollIndicator *) left
-				 right:(ScrollIndicator *) right
+- (void) setIndicators:(ScrollIndicator *) left right:(ScrollIndicator *) right
 {
 	// TODO
 	if( left == nil || right == nil )
@@ -783,8 +658,7 @@
 	}
 }
 
-- (void) setBumpers:(ScrollBumper *) left
-			  right:(ScrollBumper *) right
+- (void) setBumpers:(ScrollBumper *) left right:(ScrollBumper *) right
 {
 	// TODO
 	
@@ -794,7 +668,7 @@
 # pragma mark - ScrollingTabBarItem Delegate
 - (NSDictionary *) getItemStyle
 {
-	return itemStyle;
+	return self.itemStyle;
 }
 
 - (void) scrollingTabBarLockScroll:(BOOL)lock
@@ -820,17 +694,14 @@
         [self selectTabAtIndex:[item tag]];
      	
 		//call our delegate if selector exists
-		if( [delegate respondsToSelector:
-		 		@selector(scrollingTabBarTouched:atItem:atIndex:)] )
-            [delegate scrollingTabBarTouched: self
-                          			  atItem: item
-									 atIndex: [item tag]
-             ];
+        __weak ScrollingTabBar* weakSelf = self;
+		if( [self.delegate respondsToSelector:@selector(scrollingTabBarTouched:atItem:atIndex:)] )
+            [self.delegate scrollingTabBarTouched:weakSelf atItem: item atIndex: [item tag]];
 		return;
     }
     
     // no need for scrolling
-    if( arrTabBarItems.count <= [self calculateMaxVisibleTabs] )
+    if( self.arrTabBarItems.count <= [self calculateMaxVisibleTabs] )
         return;
 	
 	// try to bounce back
@@ -846,13 +717,13 @@
 							    to:(CGPoint) to
 {
 	// no need for scrolling
-    if( arrTabBarItems.count <= [self calculateMaxVisibleTabs] )
+    if( self.arrTabBarItems.count <= [self calculateMaxVisibleTabs] )
         return;
     
 	// move our tab bar items
     float delta = to.x - from.x; 
     
-	for( UIView *v in arrTabBarItems )
+	for( UIView *v in self.arrTabBarItems )
     {
         CGRect f = v.frame;
         f.origin.x += delta; 
@@ -863,14 +734,9 @@
 	[self blendScrollBumpers];
 	
 	//call our delegate if selector exists
-	if( [delegate respondsToSelector:
-		 @selector(scrollingTabBarMoved:withItem:atIndex:from:to:)] )
-		[delegate scrollingTabBarMoved: self
-							  withItem: item
-							   atIndex: [item tag]
-								  from: from
-									to: to
-		 ];
+    __weak ScrollingTabBar* weakSelf = self;
+	if( [self.delegate respondsToSelector: @selector(scrollingTabBarMoved:withItem:atIndex:from:to:)] )
+		[self.delegate scrollingTabBarMoved:weakSelf withItem:item atIndex:[item tag] from:from to:to];
 }
 
 
@@ -885,11 +751,7 @@
 	
 	// since we do not init our view with a frame
 	// we need now to setup the frame 
-	CGRect rect = CGRectMake(0, 
-							 newSuperview.bounds.size.height - STB_BAR_HEIGHT, 
-							 newSuperview.bounds.size.width, 
-							 STB_BAR_HEIGHT
-							 );
+	CGRect rect = CGRectMake(0, newSuperview.bounds.size.height - STB_BAR_HEIGHT, newSuperview.bounds.size.width, STB_BAR_HEIGHT);
 	self.frame = rect;
 }
 
@@ -903,45 +765,43 @@
     [self layoutTabBarItems];
     
     // Indicators
-	if( leftScrollIndicator != nil )
+	if( self.leftScrollIndicator != nil )
     {
-        float w = rightScrollIndicator.frame.size.width;
-        float h = rightScrollIndicator.frame.size.height;
+        float w = self.rightScrollIndicator.frame.size.width;
+        float h = self.rightScrollIndicator.frame.size.height;
         float y = 0;
 		float xright = self.frame.size.width - w;
         
 		CGRect rightRect = CGRectMake(xright, y, w, h);
         CGRect leftRect = CGRectMake(0, y, w, h);
 		
-		rightScrollIndicator.frame = rightRect;
-        leftScrollIndicator.frame = leftRect;
+		self.rightScrollIndicator.frame = rightRect;
+        self.leftScrollIndicator.frame = leftRect;
 		
-        [leftScrollIndicator setHidden:TRUE];
+        [self.leftScrollIndicator setHidden:TRUE];
         
-        if( arrTabBarItems.count > [self calculateMaxVisibleTabs] )
+        if( self.arrTabBarItems.count > [self calculateMaxVisibleTabs] )
         {
-            [rightScrollIndicator setHidden:FALSE];
+            [self.rightScrollIndicator setHidden:FALSE];
         } else {
-            [rightScrollIndicator setHidden:TRUE];
+            [self.rightScrollIndicator setHidden:TRUE];
         }
     }
 	
 	// Bumpers
-	if( leftScrollBumper != nil )
+	if( self.leftScrollBumper != nil )
 	{
-		float w = rightScrollBumper.frame.size.width;
-        float h = rightScrollBumper.frame.size.height;
+		float w = self.rightScrollBumper.frame.size.width;
+        float h = self.rightScrollBumper.frame.size.height;
         float y = self.frame.size.height - h;
         float xright = self.frame.size.width - w;
 		
         CGRect rightRect = CGRectMake(xright, y, w, h);
         CGRect leftRect = CGRectMake(0, y, w, h);
 		
-		rightScrollBumper.frame = rightRect;
-        leftScrollBumper.frame = leftRect;
+		self.rightScrollBumper.frame = rightRect;
+        self.leftScrollBumper.frame = leftRect;
 	}
 }
-
-
 
 @end

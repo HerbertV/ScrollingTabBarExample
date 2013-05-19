@@ -77,32 +77,22 @@
 
 - (void) setupPulseView
 {
-	pulseView = [[UIView alloc] 
-				 initWithFrame: CGRectMake(0, 
-										   0, 
-										   self.frame.size.width, 
-										   self.frame.size.height
-										   )
-				 ];
+	self.pulseView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
 	
-	[pulseView setUserInteractionEnabled:NO];
-	[pulseView setHidden:YES];
-	[self addSubview:pulseView];
+	[self.pulseView setUserInteractionEnabled:NO];
+	[self.pulseView setHidden:YES];
+	[self addSubview:self.pulseView];
 	
-	[pulseView setBackgroundColor:
-	 [UIColor colorWithPatternImage:
-	  [UIImage imageNamed:self.pulseFXIcon]
-	  ]
-	 ];
-	pulseView.opaque = NO;
+	[self.pulseView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:self.pulseFXIcon]]];
+	self.pulseView.opaque = NO;
 }
 
 - (void) animBlendIn
 {
 	animRunning = TRUE;
 	
-	[pulseView setHidden:NO];
-	[pulseView setAlpha:0.0];
+	[self.pulseView setHidden:NO];
+	[self.pulseView setAlpha:0.0];
 	 
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:PULSE_DURATION/2];
@@ -111,14 +101,14 @@
 	[UIView setAnimationDelegate:self];
 	[UIView setAnimationDidStopSelector:@selector(animBlendOut)];
 	
-	[pulseView setAlpha:1.0];
+	[self.pulseView setAlpha:1.0];
 	 
 	[UIView commitAnimations];
 }
 
 - (void) animBlendOut
 {
-	[pulseView setAlpha:1.0];
+	[self.pulseView setAlpha:1.0];
 	
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:PULSE_DURATION/2];
@@ -127,14 +117,14 @@
 	[UIView setAnimationDelegate:self];
 	[UIView setAnimationDidStopSelector:@selector(animEnded)];
 	
-	[pulseView setAlpha:0.0];
+	[self.pulseView setAlpha:0.0];
 	
 	[UIView commitAnimations];
 }
 
 - (void) animEnded
 {
-	[pulseView setHidden:YES];
+	[self.pulseView setHidden:YES];
 	animRunning = FALSE;
 }
 
@@ -148,32 +138,7 @@
 #pragma mark - Implementation Public
 @implementation ScrollIndicator
 
-#pragma mark - Synthesize
-@synthesize normalIcon;
-@synthesize pulseFXIcon;
-
-@synthesize pulseView;
-
 @synthesize animRunning;
-
-// -------------------------------------------------------------------------------
-// Dealloc
-// -------------------------------------------------------------------------------
-#pragma mark - Dealloc
-
-- (void) dealloc
-{
-	if( pulseView != nil )
-		[pulseView release];
-	
-	self.normalIcon = nil;
-	self.pulseFXIcon = nil;
-	
-	self.pulseView = nil;
-	
-	[super dealloc];
-}
-
 
 // -------------------------------------------------------------------------------
 // Initialize
@@ -183,13 +148,7 @@
 - (id) initWithImagePath:(NSString *)path
 {
 	UIImage *img = [UIImage imageNamed:path];
-	self = [super initWithFrame:
-			CGRectMake(0,
-					   0,
-					   img.size.width,
-					   img.size.height
-					   )
-			];
+	self = [super initWithFrame:CGRectMake(0, 0, img.size.width,img.size.height)];
     
 	if( self )
     {
@@ -200,23 +159,15 @@
 		self.pulseFXIcon = nil;
 		[self setBackgroundImage:img];
 		[self setupShadow];
-		
     }
     return self;
 }
 
 
-- (id) initWithImagePath:(NSString *)path
-				 fxPath:(NSString *)fxpath
+- (id) initWithImagePath:(NSString *)path fxPath:(NSString *)fxpath
 {
 	UIImage *img = [UIImage imageNamed:path];
-	self = [super initWithFrame:
-			CGRectMake(0,
-					   0,
-					   img.size.width,
-					   img.size.height
-					   )
-			];
+	self = [super initWithFrame:CGRectMake(0, 0, img.size.width, img.size.height)];
     
 	if( self )
     {
@@ -239,8 +190,7 @@
 
 - (void) doPulse
 {
-	if( self.pulseView == nil 
-	   		|| animRunning )
+	if( self.pulseView == nil || animRunning )
 		return;
 	
 	[self animBlendIn];	
